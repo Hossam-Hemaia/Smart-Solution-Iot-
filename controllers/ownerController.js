@@ -10,6 +10,7 @@ exports.postCreateProject = async (req, res, next) => {
     sensorName,
     sensorType,
     sensorIdentifier,
+    socketId,
   } = req.body;
   try {
     const userId = req.userId;
@@ -27,6 +28,7 @@ exports.postCreateProject = async (req, res, next) => {
     });
     await sensor.save();
     const project = new Project({
+      projectName,
       rooms: [
         {
           roomName,
@@ -38,8 +40,11 @@ exports.postCreateProject = async (req, res, next) => {
           ],
         },
       ],
+      ownerId: userId,
     });
     await project.save();
+    const io = require("../socket").getIo();
+    io.to(`${socketId}`).emit("sending-message", "New project created");
     res.status(201).json({
       success: true,
       message: `Project ${projectName} created successfully`,
@@ -48,3 +53,4 @@ exports.postCreateProject = async (req, res, next) => {
     next(err);
   }
 };
+

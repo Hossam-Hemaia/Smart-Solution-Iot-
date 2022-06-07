@@ -48,7 +48,7 @@ exports.postOwnerLogin = async (req, res, next) => {
         email: email,
         userId: user._id.toString(),
       },
-      process.env.secret,
+      process.env.SECRET,
       { expiresIn: "1d" }
     );
     res

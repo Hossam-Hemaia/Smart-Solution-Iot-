@@ -13,6 +13,10 @@ const sensorSchema = new Schema({
     type: String,
     required: true,
   },
+  status: {
+    type: String,
+    default: "disconnected",
+  },
   ownerId: {
     type: Schema.Types.ObjectId,
     ref: "owner",

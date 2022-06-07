@@ -18,6 +18,7 @@ const ownerSchema = new Schema({
     type: String,
     default: "owner",
   },
+  hasAccessTo: [{ entityId: { type: Schema.Types.ObjectId } }],
 });
 
 module.exports = mongoose.model("owner", ownerSchema);

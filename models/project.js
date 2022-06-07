@@ -22,6 +22,13 @@ const projectSchema = new Schema({
     },
   ],
   ownerId: { type: Schema.Types.ObjectId, ref: "owner", required: true },
+  users: [
+    {
+      userId: { type: Schema.Types.ObjectId, ref: "owner" },
+      permissionType: { type: String },
+      entityId: { type: Schema.Types.ObjectId },
+    },
+  ],
 });
 
 module.exports = mongoose.model("project", projectSchema);
