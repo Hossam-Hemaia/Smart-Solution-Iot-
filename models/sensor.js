@@ -22,6 +22,12 @@ const sensorSchema = new Schema({
     ref: "owner",
     required: true,
   },
+  sensorHistory: [
+    {
+      reads: { type: String },
+      date: { type: Date },
+    },
+  ],
 });
 
 module.exports = mongoose.model("sensor", sensorSchema);

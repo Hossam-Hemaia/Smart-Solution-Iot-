@@ -8,14 +8,14 @@ const projectSchema = new Schema({
   },
   rooms: [
     {
-      roomName: { type: String, required: true },
+      roomName: { type: String },
+      roomNumber: { type: Number },
       devices: [
         {
-          deviceName: { type: String, required: true },
+          deviceName: { type: String },
           sensorId: {
             type: Schema.Types.ObjectId,
             ref: "sensor",
-            required: true,
           },
         },
       ],
@@ -30,5 +30,33 @@ const projectSchema = new Schema({
     },
   ],
 });
+
+projectSchema.methods.addRoom = function (roomName, roomNumber) {
+  let room = {
+    roomName,
+    roomNumber,
+    devices: [],
+  };
+  const rooms = [...this.rooms];
+  rooms.push(room);
+  this.rooms = rooms;
+  return this.save();
+};
+
+projectSchema.methods.addDevice = function (roomId, deviceName, sensorId) {
+  const roomIdx = this.rooms.findIndex((roomIndex) => {
+    if (roomIndex._id.toString() === roomId.toString()) {
+      return roomIndex;
+    }
+  });
+  let device = {
+    deviceName,
+    sensorId,
+  };
+  const room = this.rooms[roomIdx];
+  room.devices.push(device);
+  this.rooms[roomIdx] = room;
+  return this.save();
+};
 
 module.exports = mongoose.model("project", projectSchema);

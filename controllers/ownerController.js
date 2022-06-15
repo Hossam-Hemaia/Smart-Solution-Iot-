@@ -54,3 +54,57 @@ exports.postCreateProject = async (req, res, next) => {
   }
 };
 
+exports.postCreateRoom = async (req, res, next) => {
+  const { roomName, roomNumber } = req.body;
+  const ownerId = req.userId;
+  try {
+    const ownerProject = await Project.findOne({ ownerId: ownerId });
+    if (!ownerProject) {
+      const error = new Error("Project does not exist!");
+      error.statusCode = 404;
+      throw error;
+    }
+    await ownerProject.addRoom(roomName, roomNumber);
+    res
+      .status(201)
+      .json({ success: true, message: "New room created successfully" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.postCreateDevice = async (req, res, next) => {
+  const ownerId = req.userId;
+  const {
+    roomId,
+    deviceName,
+    sensorName,
+    sensorType,
+    sensorIdentifier,
+  } = req.body;
+  try {
+    const ownerProject = await Project.findOne({ ownerId: ownerId });
+    if (!ownerProject) {
+      const error = new Error("Project does not exist!");
+      error.statusCode = 404;
+      throw error;
+    }
+    let sensor = await Sensor.findOne({ identifier: sensorIdentifier });
+    if (sensor) {
+      const error = new Error("Sensor already exist!");
+      error.statusCode = 422;
+      throw error;
+    }
+    sensor = new Sensor({
+      sensorName,
+      sensorType,
+      identifier: sensorIdentifier,
+      ownerId,
+    });
+    await sensor.save();
+    await ownerProject.addDevice(roomId, deviceName, sensor._id.toString());
+    res.status(201).json({ success: true, message: "New device is added" });
+  } catch (err) {
+    next(err);
+  }
+};
