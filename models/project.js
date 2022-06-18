@@ -43,6 +43,14 @@ projectSchema.methods.addRoom = function (roomName, roomNumber) {
   return this.save();
 };
 
+projectSchema.methods.removeRoom = function (roomId) {
+  filteredRooms = this.rooms.filter((room) => {
+    return room._id.toString() !== roomId.toString();
+  });
+  this.rooms = filteredRooms;
+  return this.save();
+};
+
 projectSchema.methods.addDevice = function (roomId, deviceName, sensorId) {
   const roomIdx = this.rooms.findIndex((roomIndex) => {
     if (roomIndex._id.toString() === roomId.toString()) {
@@ -55,6 +63,21 @@ projectSchema.methods.addDevice = function (roomId, deviceName, sensorId) {
   };
   const room = this.rooms[roomIdx];
   room.devices.push(device);
+  this.rooms[roomIdx] = room;
+  return this.save();
+};
+
+projectSchema.methods.removeDevice = function (roomId, sensorId) {
+  const roomIdx = this.rooms.findIndex((roomIndex) => {
+    if (roomIndex._id.toString() === roomId.toString()) {
+      return roomIndex;
+    }
+  });
+  const room = this.rooms[roomIdx];
+  const filteredDevices = room.devices.filter((device) => {
+    return device.sensorId.toString() !== sensorId.toString();
+  });
+  room.devices = filteredDevices;
   this.rooms[roomIdx] = room;
   return this.save();
 };

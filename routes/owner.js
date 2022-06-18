@@ -6,8 +6,20 @@ const router = express.Router();
 
 router.post("/create/project", isAuth, ownerController.postCreateProject);
 
-router.post('/create/room', isAuth, ownerController.postCreateRoom);
+router.get(
+  "/owner/project/:projectName",
+  isAuth,
+  ownerController.getProjectDetails
+);
 
-router.post('/create/device', isAuth, ownerController.postCreateDevice);
+router.delete("/remove/project", isAuth, ownerController.removeProject);
+
+router.post("/create/room", isAuth, ownerController.postCreateRoom);
+
+router.delete("/remove/room", isAuth, ownerController.removeRoom);
+
+router.post("/create/device", isAuth, ownerController.postCreateDevice);
+
+router.post("/assign/device", isAuth, ownerController.postAssignDevice);
 
 module.exports = router;

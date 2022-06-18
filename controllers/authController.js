@@ -49,7 +49,7 @@ exports.postOwnerLogin = async (req, res, next) => {
         userId: user._id.toString(),
       },
       process.env.SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "24h" }
     );
     res
       .status(201)
